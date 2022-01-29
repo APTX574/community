@@ -1,6 +1,7 @@
 package com.community.entity;
 
-import javax.xml.crypto.Data;
+
+import java.util.Date;
 import java.util.Objects;
 
 public class User {
@@ -13,7 +14,7 @@ public class User {
     private int status;
     private String activationCode;
     private String headerUrl;
-    private String creatTime;
+    private Date creatTime;
 
     public User() {
     }
@@ -30,7 +31,7 @@ public class User {
                 ", status=" + status +
                 ", activationCode='" + activationCode + '\'' +
                 ", headerUrl='" + headerUrl + '\'' +
-                ", creatTime='" + creatTime + '\'' +
+                ", creatTime=" + creatTime +
                 '}';
     }
 
@@ -119,11 +120,11 @@ public class User {
         this.headerUrl = headerUrl;
     }
 
-    public String getCreatTime() {
+    public Date getCreatTime() {
         return creatTime;
     }
 
-    public void setCreatTime(String creatTime) {
+    public void setCreatTime(Date creatTime) {
         this.creatTime = creatTime;
     }
 }

@@ -12,8 +12,8 @@ public interface UserMapper {
     User selectByName(String name);
 
     /**
-     * sdsdsds
-     * @param user tiania
+     * 添加用户功能，用于用户注册
+     * @param user 需要添加的用户
      * @return int
      */
     int insertUser(User user);
