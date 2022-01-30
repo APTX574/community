@@ -67,7 +67,7 @@
 					<div class="form-group row">
 						<label for="username" class="col-sm-2 col-form-label text-right">账号:</label>
 						<div class="col-sm-10">
-							<input type="text" class="form-control" id="username"
+							<input type="text" th:class="|form-control ${usernameMsg!=null?'is-invalid':''}|" id="username"
 								   th:value="${user!=null?user.username:''}"
 								   name="username" placeholder="请输入您的账号!" required>
 							<div class="invalid-feedback" th:text="${usernameMsg}">
@@ -78,7 +78,7 @@
 					<div class="form-group row mt-4">
 						<label for="password" class="col-sm-2 col-form-label text-right">密码:</label>
 						<div class="col-sm-10">
-							<input type="password" class="form-control" id="password"
+							<input type="password" th:class="|form-control ${passwordMsg!=null?'is-invalid':''}|" id="password"
 								   th:value="${user!=null?user.password:''}"
 								   name="password" placeholder="请输入您的密码!" required>
 							<div class="invalid-feedback" th:text="${passwordMsg}">
@@ -98,10 +98,10 @@
 					<div class="form-group row">
 						<label for="email" class="col-sm-2 col-form-label text-right">邮箱:</label>
 						<div class="col-sm-10">
-							<input type="email" class="form-control" id="email"
-								   th:value="user!=null?user.email:''"
+							<input type="email" th:class="|form-control ${emailMsg!=null?'is-invalid':''}|" id="email"
+								   th:value="${user!=null?user.email:''}"
 								   name="email" placeholder="请输入您的邮箱!" required>
-							<div class="invalid-feedback" th:if="" th:text="${emailMsg}">
+							<div class="invalid-feedback" th:text="${emailMsg}">
 								该邮箱已注册!
 							</div>
 						</div>
