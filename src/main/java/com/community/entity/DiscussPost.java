@@ -1,6 +1,6 @@
 package com.community.entity;
 
-import javax.xml.crypto.Data;
+import java.util.Date;
 import java.util.Objects;
 
 public class DiscussPost {
@@ -10,12 +10,13 @@ public class DiscussPost {
     private String content;
     private int type;
     private int status;
-    private Data creatTime;
+    private Date createTime;
     private int commentCount;
     private double score;
 
     @Override
-    public String   toString() {
+    public String
+    toString() {
         return "DiscussPost{" +
                 "id=" + id +
                 ", userId=" + userId +
@@ -23,7 +24,7 @@ public class DiscussPost {
                 ", content='" + content + '\'' +
                 ", type=" + type +
                 ", status=" + status +
-                ", creatTime=" + creatTime +
+                ", createTime=" + createTime +
                 ", commentCount=" + commentCount +
                 ", score=" + score +
                 '}';
@@ -34,12 +35,12 @@ public class DiscussPost {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         DiscussPost that = (DiscussPost) o;
-        return id == that.id && userId == that.userId && type == that.type && status == that.status && commentCount == that.commentCount && Double.compare(that.score, score) == 0 && Objects.equals(title, that.title) && Objects.equals(content, that.content) && Objects.equals(creatTime, that.creatTime);
+        return id == that.id && userId == that.userId && type == that.type && status == that.status && commentCount == that.commentCount && Double.compare(that.score, score) == 0 && Objects.equals(title, that.title) && Objects.equals(content, that.content) && Objects.equals(createTime, that.createTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, title, content, type, status, creatTime, commentCount, score);
+        return Objects.hash(id, userId, title, content, type, status, createTime, commentCount, score);
     }
 
     public int getId() {
@@ -90,12 +91,12 @@ public class DiscussPost {
         this.status = status;
     }
 
-    public Data getCreatTime() {
-        return creatTime;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreatTime(Data creatTime) {
-        this.creatTime = creatTime;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
     public int getCommentCount() {

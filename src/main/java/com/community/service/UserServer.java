@@ -151,4 +151,8 @@ public class UserServer implements CommunityConstant {
         map.put("msg",LOGIN_PASSWORD_ERROR);
         return map;
     }
+
+    public void logout(String ticket) {
+        loginTicketServer.updateStatus(ticket,1);
+    }
 }

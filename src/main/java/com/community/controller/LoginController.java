@@ -6,16 +6,19 @@ import com.community.service.LoginTicketServer;
 import com.community.service.UserServer;
 import com.community.util.CommunityConstant;
 import com.community.util.CommunityUtil;
+import com.community.util.CookieUtil;
 import com.google.code.kaptcha.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
@@ -61,8 +64,11 @@ public class LoginController implements CommunityConstant {
      * @RequestPath /login
      */
     @RequestMapping(path = "/login", method = RequestMethod.GET)
-    public String getLoginPage() {
+    public String getLoginPage(HttpServletRequest request) {
+
         return "/site/login";
+
+
     }
 
     /**
@@ -130,7 +136,7 @@ public class LoginController implements CommunityConstant {
      * @RequestPath /login
      */
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public String login(Model model, User user, String code, HttpSession session, boolean rememberMe , HttpServletResponse response) {
+    public String login(Model model, User user, String code, HttpSession session, boolean rememberMe, HttpServletResponse response) {
         String code1 = session.getAttribute("code").toString().toLowerCase(Locale.ROOT);
         if (!code1.equals(code.toLowerCase(Locale.ROOT))) {
             model.addAttribute("codeMsg", "验证码输入错误");
@@ -140,14 +146,17 @@ public class LoginController implements CommunityConstant {
 
         Map<String, Object> map = userServer.login(user.getUsername(), user.getPassword(), rememberMe);
 
-        int result= (int) map.get("msg");
+        int result = (int) map.get("msg");
         if (result == LOGIN_SUCCESS) {
+            //添加cookie
             Cookie cookie = new Cookie("loginId", (String) map.get("ticket"));
-            cookie.setMaxAge(60*60*24*7);
+            cookie.setMaxAge(60 * 60 * 24 * 7);
             response.addCookie(cookie);
-            model.addAttribute("msg", "登录成功，即将跳转");
-            model.addAttribute("target", "/index");
-            return "/site/operate-result";
+//            model.addAttribute("msg", "登录成功，即将跳转");
+//            model.addAttribute("target", "/index");
+
+            //重定向到首页
+            return "redirect:/index";
         }
         if (result == LOGIN_PASSWORD_ERROR) {
             model.addAttribute("user", user);
@@ -163,6 +172,26 @@ public class LoginController implements CommunityConstant {
         model.addAttribute("user", user);
         return "/site/login";
 
+    }
+
+    /**
+     * 设置页面退出
+     * 1. 将cookie对于的ticket状态设置为无效（1）
+     * 2. 将cookie删除（有效时间设为0）
+     * @param ticket cookie中所附带ticket
+     * @param response 响应对象，用于设置cookie
+     * @return 重定向至主页面
+     */
+    @RequestMapping("/logout")
+    public String logout(HttpServletRequest request,HttpServletResponse response){
+        String ticket=CookieUtil.getValue(request,"loginId");
+        if(ticket!=null){
+            userServer.logout(ticket);
+            Cookie cookie=new Cookie("loginId",ticket);
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
+        return "redirect:index";
     }
 
     /**
