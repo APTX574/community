@@ -35,7 +35,7 @@ public interface CommunityConstant {
     /**
      * 账号验证正确，但是未激活
      */
-    int LOGIN_NOT_ACTIVATION=9;
+    int LOGIN_NOT_ACTIVATION=8;
     /**
      * 无法查找到ticket
      */
@@ -49,5 +49,20 @@ public interface CommunityConstant {
     /**
      * 查找到ticket且未过期
      */
-    int TICKET_FIND_SUCCESS=8;
+    int TICKET_FIND_SUCCESS=9;
+
+    /**
+     * 修改密码传过来的旧密码不正确
+     */
+    int CHANGE_PWD_ERROR_OLD_PWD=10;
+
+    /**
+     * 修改密码成功
+     */
+    int CHANGE_PWD_SUCCESS=11;
+
+    /**
+     * 未登录
+     */
+    int UN_LOGIN=12;
 }

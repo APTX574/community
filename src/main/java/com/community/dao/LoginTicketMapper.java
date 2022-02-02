@@ -3,6 +3,8 @@ package com.community.dao;
 import com.community.entity.LoginTicket;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 /**
  * @author aptx
  */
@@ -28,4 +30,6 @@ public interface LoginTicketMapper {
      * @return LoginTicket对象
      */
     LoginTicket findByTicket(String ticket);
+
+    int  updateStatusByUserId(int userId,int status);
 }

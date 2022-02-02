@@ -88,7 +88,7 @@ public class UserServer implements CommunityConstant {
         Context context = new Context();
         context.setVariable("email", user.getEmail());
 
-        //http://community.xwxs.xyz/community/activation/id/code
+        //http://community.xwxs.xyz/activation/id/code
         String url = doMain + comtextPath + "activation/" + user.getId() + "/" + user.getActivationCode();
         context.setVariable("url", url);
         String content = templateEngine.process("/mail/activation", context);
@@ -153,6 +153,19 @@ public class UserServer implements CommunityConstant {
     }
 
     public void logout(String ticket) {
-        loginTicketServer.updateStatus(ticket,1);
+        loginTicketServer.updateStatusByTicket(ticket,1);
+    }
+
+    public void changePwd(int id, String pwd) {
+        userMapper.updatePassword(id,pwd);
+        System.out.println("更新状态");
+        loginTicketServer.updateStatusByUserId(id,1);
+    }
+
+    public void changeHeaderUrl(int userId,String headerUrl){
+        if(StringUtils.isBlank(headerUrl)){
+            return;
+        }
+        userMapper.updateHeader(userId,headerUrl);
     }
 }

@@ -21,30 +21,34 @@ public class LoginTicketServer implements CommunityConstant {
     @Autowired
     private LoginTicketMapper loginTicketMapper;
 
-    public Map<String ,Object> verifyTicket(String ticket){
-        Map<String,Object> map=new HashMap<>();
-        if(StringUtils.isBlank(ticket)){
-            map.put("msg",TICKET_NOT_FIND);
+    public Map<String, Object> verifyTicket(String ticket) {
+        Map<String, Object> map = new HashMap<>();
+        if (StringUtils.isBlank(ticket)) {
+            map.put("msg", TICKET_NOT_FIND);
             return map;
         }
         LoginTicket loginTicket = loginTicketMapper.findByTicket(ticket);
-        if(new Date().after(loginTicket.getExpired())){
-            map.put("msg",TICKET_OVERDUE);
+        if (new Date().after(loginTicket.getExpired())||loginTicket.getStatus()==1) {
+            map.put("msg", TICKET_OVERDUE);
             return map;
         }
-        map.put("msg",TICKET_FIND_SUCCESS);
-        map.put("userId",loginTicket.getUserId());
+        map.put("msg", TICKET_FIND_SUCCESS);
+        map.put("userId", loginTicket.getUserId());
         return map;
     }
 
     public void addLoginTicket(LoginTicket loginTicket) {
-        if(loginTicket!=null){
+        if (loginTicket != null) {
             loginTicketMapper.addLoginTicket(loginTicket);
         }
     }
 
-    public void updateStatus(String ticket, int status) {
-        loginTicketMapper.updateStatusByTicket(ticket,status);
+    public void updateStatusByTicket(String ticket, int status) {
+        loginTicketMapper.updateStatusByTicket(ticket, status);
+    }
+
+    public void updateStatusByUserId(int userId, int status) {
+        loginTicketMapper.updateStatusByUserId(userId,status);
     }
 
 

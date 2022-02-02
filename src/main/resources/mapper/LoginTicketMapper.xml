@@ -20,4 +20,9 @@
         from login_ticket
         where ticket=#{ticket}
     </select>
+    <update id="updateStatusByUserId">
+        update login_ticket
+        set status=#{status}
+        where user_id=#{userId}
+    </update>
 </mapper>
