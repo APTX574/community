@@ -64,13 +64,17 @@
 			<div class="container p-5 mt-3 mb-3">
 				<!-- 上传头像 -->
 				<h6 class="text-left text-info border-bottom pb-2">上传头像</h6>
-				<form class="mt-5"  th:action="@{/change/headerurl}">
+				<form class="mt-5"  th:action="@{/change/header}" method="post" enctype="multipart/form-data">
 					<div class="form-group row mt-4">
 						<label class="col-sm-2 col-form-label text-right">选择头像:</label>
 						<div class="col-sm-10">
 							<div class="custom-file">
-								<input type="file" class="custom-file-input" id="head-image" lang="es" required="">
+								<input type="file" th:class="|custom-file-input ${error!=null?'is-invalid':''}|" id="head-image" lang="es"
+									   name="image" required="">
 								<label class="custom-file-label" for="head-image" data-browse="文件">选择一张图片</label>
+								<div class="invalid-feedback" th:text="${error}">
+									该账号不存在!
+								</div>
 							</div>		
 						</div>
 					</div>
@@ -87,10 +91,10 @@
 					<div class="form-group row mt-4">
 						<label for="old-password" class="col-sm-2 col-form-label text-right">原密码:</label>
 						<div class="col-sm-10">
-							<input type="password" class="form-control" id="old-password"
+							<input type="password" th:class="|form-control ${passwordMsg!=null?'is-invalid':''}|" id="old-password"
 								   name="oldPwd"
 								   placeholder="请输入原始密码!" required>
-							<div class="invalid-feedback">
+							<div class="invalid-feedback" th:text="${passwordMsg}">
 								密码长度不能小于8位!
 							</div>
 						</div>

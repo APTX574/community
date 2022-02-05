@@ -1,17 +1,14 @@
 package com.community.controller;
 
-import com.community.entity.LoginTicket;
 import com.community.entity.User;
 import com.community.service.LoginTicketServer;
 import com.community.service.UserServer;
 import com.community.util.CommunityConstant;
-import com.community.util.CommunityUtil;
 import com.community.util.CookieUtil;
 import com.google.code.kaptcha.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,8 +21,6 @@ import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.http.HttpResponse;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
@@ -34,9 +29,6 @@ import java.util.Map;
  */
 @Controller
 public class LoginController implements CommunityConstant {
-
-    @Autowired
-    private LoginTicketServer loginTicketServer;
 
     @Autowired
     private UserServer userServer;
@@ -178,16 +170,18 @@ public class LoginController implements CommunityConstant {
      * 设置页面退出
      * 1. 将cookie对于的ticket状态设置为无效（1）
      * 2. 将cookie删除（有效时间设为0）
-     * @param ticket cookie中所附带ticket
+     *
      * @param response 响应对象，用于设置cookie
      * @return 重定向至主页面
+     * @ResquestMethod Get
+     * @RequestPath /logout
      */
     @RequestMapping("/logout")
-    public String logout(HttpServletRequest request,HttpServletResponse response){
-        String ticket=CookieUtil.getValue(request,"loginId");
-        if(ticket!=null){
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        String ticket = CookieUtil.getValue(request, "loginId");
+        if (ticket != null) {
             userServer.logout(ticket);
-            Cookie cookie=new Cookie("loginId",ticket);
+            Cookie cookie = new Cookie("loginId", ticket);
             cookie.setMaxAge(0);
             response.addCookie(cookie);
         }

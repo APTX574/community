@@ -53,6 +53,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor , CommunityCon
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        //获取用户数据，并将用户数据放入模板
         User user = hostHolder.getUser();
         if(user!=null&&modelAndView!=null){
             modelAndView.addObject("loginUser",user);
@@ -61,6 +62,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor , CommunityCon
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        //删除对象
         hostHolder.clear();
     }
 }
