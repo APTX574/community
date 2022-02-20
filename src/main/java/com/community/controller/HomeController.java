@@ -3,8 +3,10 @@ package com.community.controller;
 import com.community.entity.DiscussPost;
 import com.community.entity.Page;
 import com.community.entity.User;
+import com.community.service.CommentService;
 import com.community.service.DiscussPostServer;
 import com.community.service.UserServer;
+import com.community.util.CommunityConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,12 +25,25 @@ import java.util.Map;
  * @author aptx
  */
 @Controller
-public class HomeController {
+public class HomeController implements CommunityConstant {
     @Autowired
-    public DiscussPostServer discussPostServer;
+    private DiscussPostServer discussPostServer;
     @Autowired
-    public UserServer userServer;
+    private UserServer userServer;
+    @Autowired
+    private CommentService commentService;
 
+
+
+    @RequestMapping("/")
+    public void  gen(HttpServletResponse response){
+        try {
+            response.sendRedirect("http://localhost:8080/index");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
     /**
      * 获取current页面的数据
      *
@@ -59,7 +76,10 @@ public class HomeController {
                 map.put("post", post);
                 User user = userServer.getUserById(post.getUserId());
                 map.put("user", user);
+                int replyCount=commentService.findCountByEntity(ENTITY_TYPE_POST,post.getId());
+                map.put("replyCount",replyCount);
                 posts.add(map);
+
             }
         }
         //将数据和页面数据方法。

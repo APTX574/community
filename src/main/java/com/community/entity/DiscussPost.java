@@ -8,8 +8,8 @@ public class DiscussPost {
     private int userId;
     private String title;
     private String content;
-    private int type;
-    private int status;
+    private int type = 0;
+    private int status = 0;
     private Date createTime;
     private int commentCount;
     private double score;
@@ -115,3 +115,15 @@ public class DiscussPost {
         this.score = score;
     }
 }
+/*
+* comments
+*   list cvo
+*       comment
+*       user
+*       replyCount
+*       replys rvo
+*           reply Comment对象
+*           user 发送者对象
+*           target 发送评论的目标对象
+*
+* */

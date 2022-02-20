@@ -30,7 +30,7 @@ KEY `index.email` ( `email` (20))
 ) ENGINE=InnoDB AUTO_INCREMENT=150 DEFAULT CHARSET utf8 */
 
 
-CREATE TABLE discuss_post (
+/* CREATE TABLE discuss_post (
 
 `id` int(11) NOT NULL AUTO_INCREMENT,
 
@@ -46,6 +46,32 @@ CREATE TABLE discuss_post (
 `create_time` timestamp NULL DEFAULT NULL,
 `comment_count` int(11) DEFAULT NULL,
 `score` double DEFAULT NULL,
+PRIMARY KEY(`id`),
+FOREIGN KEY(user_id) REFERENCES user(id)
+
+) ENGINE=InnoDB AUTO_INCREMENT=281 DEFAULT CHARSET=utf8 */
+
+
+
+CREATE TABLE comment (
+
+`id` int(11) NOT NULL AUTO_INCREMENT,
+
+`user_id` int(11) DEFAULT NULL,
+
+`entity_type` int(11) DEFAULT NULL COMMENT "0-帖子;1-评论;",
+
+`entity_id` int(11) DEFAULT NULL ,
+
+`target_id` int(11) DEFAULT NULL  ,
+
+`content` text,
+
+`status` int(11) DEFAULT NULL COMMENT '0-正常;1-精华;2-拉黑;',
+
+`create_time` timestamp NULL DEFAULT NULL,
+
+
 PRIMARY KEY(`id`),
 FOREIGN KEY(user_id) REFERENCES user(id)
 

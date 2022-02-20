@@ -3,7 +3,7 @@ package com.community.util;
 /**
  * @author aptx
  */
-public interface CommunityConstant {
+public interface    CommunityConstant {
     /**
      * 激活成功
      */
@@ -65,4 +65,18 @@ public interface CommunityConstant {
      * 未登录
      */
     int UN_LOGIN=12;
+
+    /**
+     * 实体类型帖子
+     */
+    int ENTITY_TYPE_POST=0;
+    /**
+     * 实体类型评论
+     */
+    int ENTITY_TYPE_COMMENT=1;
+
+    /**
+     * 评论每行显示条数
+     */
+    int COMMENT_LIMIT=5;
 }
