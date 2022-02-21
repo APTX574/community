@@ -14,7 +14,7 @@ public class User {
     private int status;
     private String activationCode;
     private String headerUrl;
-    private Date creatTime;
+    private Date createTime;
 
     public User() {
     }
@@ -31,7 +31,7 @@ public class User {
                 ", status=" + status +
                 ", activationCode='" + activationCode + '\'' +
                 ", headerUrl='" + headerUrl + '\'' +
-                ", creatTime=" + creatTime +
+                ", creatTime=" + createTime +
                 '}';
     }
 
@@ -40,12 +40,12 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && type == user.type && status == user.status && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(salt, user.salt) && Objects.equals(email, user.email) && Objects.equals(activationCode, user.activationCode) && Objects.equals(headerUrl, user.headerUrl) && Objects.equals(creatTime, user.creatTime);
+        return id == user.id && type == user.type && status == user.status && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(salt, user.salt) && Objects.equals(email, user.email) && Objects.equals(activationCode, user.activationCode) && Objects.equals(headerUrl, user.headerUrl) && Objects.equals(createTime, user.createTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, salt, email, type, status, activationCode, headerUrl, creatTime);
+        return Objects.hash(id, username, password, salt, email, type, status, activationCode, headerUrl, createTime);
     }
 
     public int getId() {
@@ -121,10 +121,10 @@ public class User {
     }
 
     public Date getCreatTime() {
-        return creatTime;
+        return createTime;
     }
 
     public void setCreatTime(Date creatTime) {
-        this.creatTime = creatTime;
+        this.createTime = creatTime;
     }
 }

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.community.dao.MessageMapper">
+
+    <select id="selectConversationIdByUserId" resultType="java.lang.String">
+        select conversation_id
+        from message
+        where from_id = #{userId}
+           or to_id = #{userId}
+        group by conversation_id
+        limit #{offset},#{limit}
+    </select>
+    <select id="selectNewestMessageByConversationId" resultType="com.community.entity.Message">
+        select id, from_id, to_id, conversation_id, content, status, create_time
+        from message
+        where conversation_id = #{conversationId}
+        order by create_time desc
+        limit 1
+    </select>
+    <select id="selectUnReadCountByConversion" resultType="java.lang.Integer">
+        select ifnull(count(1), 0)
+        from message
+        where conversation_id = #{conversationId}
+          and status = 0
+          and to_id = #{userId}
+    </select>
+    <select id="selectAllCountByConversion" resultType="java.lang.Integer">
+        select ifnull(count(1), 0)
+        from message
+        where conversation_id = #{conversationId}
+    </select>
+    <select id="selectConversationCount" resultType="java.lang.Integer">
+        select ifnull(count(1), 0)
+        from message
+        where from_id = #{userId}
+           or to_id = #{userId}
+        group by conversation_id
+    </select>
+    <select id="selectAllMessageByConversation" resultType="com.community.entity.Message">
+        select id, from_id, to_id, conversation_id, content, status, create_time
+        from message
+        where conversation_id = #{conversationId}
+        order by create_time desc
+        limit #{offset},#{limit}
+    </select>
+</mapper>
