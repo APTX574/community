@@ -52,5 +52,7 @@ public class CommunityUtil {
     public static String getJsonString(int code){
         return getJsonString(code,null,null);
     }
+    public static void addNotice(){
 
+    }
 }
