@@ -79,4 +79,21 @@ public interface    CommunityConstant {
      * 评论每行显示条数
      */
     int COMMENT_LIMIT=5;
+
+    /**
+     * 未读的消息类型
+     */
+    int UNREAD_MESSAGE=0;
+    /**
+     * 已读的消息类型
+     */
+    int READ_MESSAGE=1;
+    /**
+     * 未读的通知类型
+     */
+    int UNREAD_NOTICE=2;
+    /**
+     * 已读的通知类型
+     */
+    int READ_NOTICE=3;
 }

@@ -5,6 +5,7 @@ import com.community.entity.Page;
 import com.community.entity.User;
 import com.community.service.CommentService;
 import com.community.service.DiscussPostServer;
+import com.community.service.MessageService;
 import com.community.service.UserServer;
 import com.community.util.CommunityConstant;
 import com.community.util.HostHolder;

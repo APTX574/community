@@ -6,6 +6,7 @@ import com.community.entity.Page;
 import com.community.entity.User;
 import com.community.service.MessageService;
 import com.community.service.UserServer;
+import com.community.util.CommunityConstant;
 import com.community.util.CommunityUtil;
 import com.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping(path = "letter")
-public class MessageController {
+public class MessageController implements CommunityConstant {
     @Autowired
     MessageService messageService;
 
@@ -60,12 +61,16 @@ public class MessageController {
                 }
                 int unReadCount = messageService.findUnReadByConversation(userId, conversationId);
                 map.put("unReadCount", unReadCount);
-                int allCount = messageService.findAllCountByConversation(userId, conversationId);
+                int allCount = messageService.findAllCountByConversation(conversationId);
                 map.put("allCount", allCount);
                 map.put("conversationId", conversationId);
                 list.add(map);
             }
         }
+        int unreadMessageCount = messageService.findUnReadCountByType(userId, UNREAD_MESSAGE);
+        int unreadNoticeCount = messageService.findUnReadCountByType(userId, UNREAD_NOTICE);
+        model.addAttribute("unreadMessage", unreadMessageCount);
+        model.addAttribute("unreadNotice", unreadNoticeCount);
         model.addAttribute("conversations", list);
         model.addAttribute("page", page);
         return "/site/letter";
@@ -75,9 +80,10 @@ public class MessageController {
     @RequestMapping(path = "detail/{conversationId}", method = RequestMethod.GET)
     public String getLetterDetail(@PathVariable(value = "conversationId", required = false) String conversationId,
                                   Model model, Page page) {
+        //获取关于会话的消息
         User user = hostHolder.getUser();
         int userId = user.getId();
-        page.setRows(messageService.findAllCountByConversation(userId, conversationId));
+        page.setRows(messageService.findAllCountByConversation(conversationId));
         page.setPath("/letter/detail/" + conversationId);
         List<Message> messages = messageService.findMessageByConversation(conversationId, page.getOffset(), page.getLimit());
         int fromUser;
@@ -95,6 +101,8 @@ public class MessageController {
         }
         model.addAttribute("fromUser", userServer.getUserById(fromUser));
         model.addAttribute("list", list);
+        //将消息全部设为已读
+        messageService.changeMessageStatus(conversationId);
         return "/site/letter-detail";
 
     }
@@ -103,13 +111,13 @@ public class MessageController {
     @RequestMapping(path = "add", method = RequestMethod.POST)
     @ResponseBody
     public String addMessage(int fromId, String toName, String content) {
-        User toUser=userServer.getUserByUsername(toName);
+        User toUser = userServer.getUserByUsername(toName);
 
-        if (toUser!=null){
-            int toId=toUser.getId();
+        if (toUser != null) {
+            int toId = toUser.getId();
             int loginId = hostHolder.getUser().getId();
             if (loginId == fromId) {
-                int i = messageService.addMessage(fromId, toId, content);
+                int i = messageService.addMessage(fromId, toId, content, 0);
                 if (i == 1) {
                     return CommunityUtil.getJsonString(200, "添加成功");
                 }
@@ -118,4 +126,5 @@ public class MessageController {
         }
         return CommunityUtil.getJsonString(500, "添加失败");
     }
+
 }

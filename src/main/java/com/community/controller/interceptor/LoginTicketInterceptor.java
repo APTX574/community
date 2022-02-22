@@ -2,6 +2,7 @@ package com.community.controller.interceptor;
 
 import com.community.entity.User;
 import com.community.service.LoginTicketServer;
+import com.community.service.MessageService;
 import com.community.service.UserServer;
 import com.community.util.CommunityConstant;
 import com.community.util.CommunityUtil;
@@ -22,7 +23,7 @@ import java.util.Objects;
  * @author aptx
  */
 @Component
-public class LoginTicketInterceptor implements HandlerInterceptor , CommunityConstant {
+public class LoginTicketInterceptor implements HandlerInterceptor, CommunityConstant {
 
     @Autowired
     private LoginTicketServer loginTicketServer;
@@ -33,6 +34,9 @@ public class LoginTicketInterceptor implements HandlerInterceptor , CommunityCon
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private MessageService messageService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //获取到cookie中的ticket
@@ -41,7 +45,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor , CommunityCon
         if (ticket != null && !StringUtils.isBlank(ticket)) {
             //验证ticket
             Map<String, Object> map = loginTicketServer.verifyTicket(ticket);
-            if(Objects.equals(map.get("msg"), TICKET_FIND_SUCCESS)){
+            if (Objects.equals(map.get("msg"), TICKET_FIND_SUCCESS)) {
                 //持有User信息
                 //原理，这个方法在请求处理前执行，只要当前请求为处理结束，线程就不会结束，所以后面的方法中
                 //可以从线程中取获取User信息，http协议无法判断请求的前后关系，所以对与这种请求是每次都必须处理。
@@ -55,8 +59,10 @@ public class LoginTicketInterceptor implements HandlerInterceptor , CommunityCon
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         //获取用户数据，并将用户数据放入模板
         User user = hostHolder.getUser();
-        if(user!=null&&modelAndView!=null){
-            modelAndView.addObject("loginUser",user);
+        if (user != null && modelAndView != null) {
+            int unReadCount = messageService.findUnReadCountByUserId(user.getId());
+            modelAndView.addObject("unreadCount", unReadCount);
+            modelAndView.addObject("loginUser", user);
         }
     }
 

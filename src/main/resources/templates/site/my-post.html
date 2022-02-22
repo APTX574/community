@@ -68,18 +68,20 @@
         <div class="container">
             <!-- 选项 -->
             <div class="position-relative">
-                <ul class="nav nav-tabs" th:replace="profile::nav">
+                <ul class="nav nav-tabs" >
                     <li class="nav-item">
-                        <a class="nav-link active" th:href="@{'/profile/'+${user.id}}">个人信息</a>
+                        <a class="nav-link " th:href="@{'/profile/'+${user.id}}">个人信息</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link active" th:href="@{'/mypost/'+${user.id}}"
+                           th:text="${loginUser.id==user.id?'我的帖子':'他的帖子'}">我的帖子</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{'/mypost/'+${user.id}}">我的帖子</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{'/myreply/'+${user.id}}">我的回复</a>
+                        <a class="nav-link" th:href="@{'/myreply/'+${user.id}}"
+                           th:text="${loginUser.id==user.id?'我的回复':'他的回复'}">我的帖子</a>
                     </li>
                 </ul>
-                <a href="profile.html" class="text-muted position-absolute rt-0">返回个人主页&gt;</a>
+                <a th:href="@{'/profile/'+${user.id}}" class="text-muted position-absolute rt-0">返回个人主页&gt;</a>
             </div>
             <!-- 我的帖子 -->
             <div class="mt-4">

@@ -14,7 +14,7 @@ public interface MessageMapper {
 
 
     /**
-     * 通过用户信息获取与用户有关的回话信息
+     * 通过用户信息获取与用户有关的会话信息
      *
      * @param userId 用户id
      * @param offset 偏移量
@@ -29,7 +29,7 @@ public interface MessageMapper {
      * @param conversationId 会话id
      * @return 最新的消息对象
      */
-    Message selectNewestMessageByConversationId(String conversationId);
+    Message selectNewestMessageByConversation(String conversationId);
 
     /**
      * 获取指定用户指定会话的未读消息数目
@@ -47,7 +47,7 @@ public interface MessageMapper {
      * @param conversationId 会话id
      * @return 未读消息数目
      */
-    int selectAllCountByConversion(int userId, String conversationId);
+    int selectAllCountByConversion(String conversationId);
 
     /**
      * 根据用户id查询与之有关的会话数目
@@ -67,5 +67,27 @@ public interface MessageMapper {
      */
     List<Message> selectAllMessageByConversation(String conversationId, int offset, int limit);
 
+    /**
+     * 添加消息或者通知
+     *
+     * @param message 消息或通知对象
+     * @return 该变条数
+     */
     int insertMessage(Message message);
+
+    /**
+     * 通过userId获取所有未读消息和通知数目
+     *
+     * @param userId 用户id
+     * @param status 查询的消息状态类型
+     * @return 要查询的状态的消息和通知的数目
+     */
+    int selectUnReadCountByUserId(int userId, int status);
+
+    /**
+     * 修改对应会话的消息的状态，将未读转为已读
+     * @param conversationId 会话id
+     * @return 返回修改的条数
+     */
+    int updateMessageStatus(String conversationId);
 }

@@ -39,9 +39,7 @@ public class ProfileController {
 
     @RequestMapping("/profile/{userId}")
     public String getProfilePage(@PathVariable(value = "userId") int userId, Model model) {
-
         User user = userServer.getUserById(userId);
-        System.out.println(user);
         model.addAttribute("user", user);
         return "/site/profile";
     }
@@ -55,6 +53,9 @@ public class ProfileController {
         List<DiscussPost> discussPosts = discussPostServer.findDiscussPosts(userId, page.getOffset(), page.getLimit());
         model.addAttribute("list", discussPosts);
         model.addAttribute("count", page.getRows());
+
+        User user = userServer.getUserById(userId);
+        model.addAttribute("user", user);
         return "/site/my-post";
         //TODO 处理查找到模板错误
     }
@@ -78,10 +79,14 @@ public class ProfileController {
             }
             map.put("comment",comment);
             map.put("post",discussPost);
+
+
             list.add(map);
         }
         model.addAttribute("list",list);
         model.addAttribute("count",commentService.findCountByUserId(userId));
+        User user = userServer.getUserById(userId);
+        model.addAttribute("user", user);
         return "/site/my-reply";
         //TODO 处理查找到模板错误
 
