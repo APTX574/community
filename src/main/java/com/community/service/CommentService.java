@@ -31,10 +31,24 @@ public class CommentService implements CommunityConstant {
     @Autowired
     private SensitiveFilter sensitiveFilter;
 
+    /**
+     * 通过回复的种类和id查找回复
+     * @param entityType 回复目标的种类
+     * @param entityId 回复目标的id
+     * @param offset 起始位置
+     * @param limit 每一页的限制
+     * @return 回复的列表
+     */
     public List<Comment> findCommentsByEntity(int entityType, int entityId, int offset, int limit) {
         return commentMapper.selectCommentByEntity(entityType, entityId, offset, limit);
     }
 
+    /**
+     * 通过回复的种类和id查找回复数量
+     * @param entityType 回复的目标种类
+     * @param entityId 回复的目标的id
+     * @return
+     */
     public int findCountByEntity(int entityType, int entityId) {
         return commentMapper.selectCountByEntity(entityType, entityId);
     }
@@ -62,7 +76,16 @@ public class CommentService implements CommunityConstant {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
+    }
 
+    public List<Comment> findCommentByUserId(int userId, int offset, int limit){
+        return commentMapper.selectCommentsByUserId(userId,offset,limit);
+    }
 
+    public int findCountByUserId(int userId){
+        return commentMapper.selectCountByUserId(userId);
+    }
+    public Comment findCommentById(int id){
+        return commentMapper.selectCommentById(id);
     }
 }

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.community.dao.MessageMapper">
+    <insert id="insertMessage" keyProperty="id" parameterType="Message">
+        insert into message( from_id, to_id, conversation_id, content, status, create_time)
+        values(#{fromId},#{toId},#{conversationId},#{content},#{status},#{createTime})
+    </insert>
 
     <select id="selectConversationIdByUserId" resultType="java.lang.String">
         select conversation_id
@@ -30,11 +34,15 @@
         where conversation_id = #{conversationId}
     </select>
     <select id="selectConversationCount" resultType="java.lang.Integer">
-        select ifnull(count(1), 0)
-        from message
-        where from_id = #{userId}
-           or to_id = #{userId}
-        group by conversation_id
+        select count(m2.conversation_id)
+        from (
+                 select conversation_id
+                 from message m1
+                 where m1.from_id = 15218
+                    or m1.to_id = 15218
+                 group by m1.conversation_id
+             ) m2
+
     </select>
     <select id="selectAllMessageByConversation" resultType="com.community.entity.Message">
         select id, from_id, to_id, conversation_id, content, status, create_time
@@ -43,4 +51,6 @@
         order by create_time desc
         limit #{offset},#{limit}
     </select>
+
+
 </mapper>

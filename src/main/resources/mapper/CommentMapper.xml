@@ -5,7 +5,7 @@
 <mapper namespace="com.community.dao.CommentMapper">
     <insert id="insertComment" parameterType="Comment" keyProperty="id">
         insert into comment(user_id, entity_type, entity_id, target_id, content, status, create_time)
-        values (#{userId},#{entityType},#{entityId},#{targetId},#{content},#{status},#{createTime})
+        values (#{userId}, #{entityType}, #{entityId}, #{targetId}, #{content}, #{status}, #{createTime})
     </insert>
 
     <select id="selectCommentByEntity" resultType="Comment">
@@ -31,6 +31,37 @@
         where status = 0
           and entity_type = #{entityType}
           and entity_id = #{entityId}
+    </select>
+    <select id="selectCommentsByUserId" resultType="com.community.entity.Comment">
+        select id,
+               user_id,
+               entity_type,
+               entity_id,
+               target_id,
+               content,
+               status,
+               create_time
+        from comment
+        where user_id = #{userId}
+        order by create_time desc
+        limit #{offset},#{limit}
+    </select>
+    <select id="selectCountByUserId" resultType="java.lang.Integer">
+        select count(id)
+        from comment
+        where user_id = #{userId}
+    </select>
+    <select id="selectCommentById" resultType="com.community.entity.Comment">
+        select id,
+               user_id,
+               entity_type,
+               entity_id,
+               target_id,
+               content,
+               status,
+               create_time
+        from comment
+        where id = #{id}
     </select>
 
 

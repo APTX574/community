@@ -60,10 +60,12 @@ public interface MessageMapper {
     /**
      * 通过会话获得所有的消息记录并做分页
      *
-     * @param conversationId  会话id
-     * @param offset 起始
-     * @param limit 每页最大显示数目
+     * @param conversationId 会话id
+     * @param offset         起始
+     * @param limit          每页最大显示数目
      * @return 消息列表
      */
     List<Message> selectAllMessageByConversation(String conversationId, int offset, int limit);
+
+    int insertMessage(Message message);
 }

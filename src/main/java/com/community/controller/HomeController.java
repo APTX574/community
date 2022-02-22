@@ -7,6 +7,7 @@ import com.community.service.CommentService;
 import com.community.service.DiscussPostServer;
 import com.community.service.UserServer;
 import com.community.util.CommunityConstant;
+import com.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ public class HomeController implements CommunityConstant {
     private UserServer userServer;
     @Autowired
     private CommentService commentService;
+
 
 
 
@@ -86,6 +88,7 @@ public class HomeController implements CommunityConstant {
         modelAndView.setViewName("index");
         modelAndView.addObject("page", page);
         modelAndView.addObject("discussPosts", posts);
+
         return modelAndView;
     }
 
