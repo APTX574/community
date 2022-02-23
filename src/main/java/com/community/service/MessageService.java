@@ -128,12 +128,23 @@ public class MessageService implements CommunityConstant {
         return messageMapper.selectUnReadCountByUserId(userId, UNREAD_MESSAGE) +
                 messageMapper.selectUnReadCountByUserId(userId, UNREAD_NOTICE);
     }
-    public int findUnReadCountByType(int userId,int status){
-        return messageMapper.selectUnReadCountByUserId(userId,status);
+
+    public int findUnReadCountByType(int userId, int status) {
+        return messageMapper.selectUnReadCountByUserId(userId, status);
     }
 
-    public int changeMessageStatus(String conversationId){
+    public int changeMessageStatus(String conversationId) {
         return messageMapper.updateMessageStatus(conversationId);
     }
 
+    public int addNotice(int fromId, String content, int toId, int status) {
+        String conversationId = fromId + "_" + toId;
+        Message message=new Message();
+        message.setCreateTime(new Date());
+        message.setStatus(status);
+        message.setToId(toId);
+        message.setFromId(fromId);
+        message.setConversationId(conversationId);
+        return messageMapper.insertMessage(message);
+    }
 }

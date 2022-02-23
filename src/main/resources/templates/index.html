@@ -31,7 +31,8 @@
                         </li>
                         <li class="nav-item ml-3 btn-group-vertical">
                             <a class="nav-link position-relative" th:href="@{/letter/page}" th:if="${loginUser!=null}">消息
-                                <span class="badge badge-danger" th:if="${unreadCount!=0}" th:text="${unreadCount}">12</span></a>
+                                <span class="badge badge-danger" th:if="${unreadCount!=0}"
+                                      th:text="${unreadCount}">12</span></a>
                         </li>
                         <li class="nav-item ml-3 btn-group-vertical">
                             <a class="nav-link" th:href="@{/register}" th:if="${loginUser==null}">注册</a>
@@ -79,7 +80,7 @@
                 </ul>
                 <button type="button" class="btn btn-primary btn-sm position-absolute rt-0" data-toggle="modal"
                         data-target="#publishModal"
-                        th:if="${loginUser!=null}" >我要发布
+                        th:if="${loginUser!=null}">我要发布
                 </button>
             </div>
             <!-- 弹出框 -->
@@ -140,12 +141,13 @@
                             <span class="badge badge-secondary bg-primary" th:if="${map.post.type==1}">置顶</span>
                             <span class="badge badge-secondary bg-danger" th:if="${map.post.type==2}">精华</span>
                         </h6>
-<!--                        							th:text="${#dates.format(map.post.createTime,'yy-MM-dd HH:mm:ss')}"-->
+                        <!--                        							th:text="${#dates.format(map.post.createTime,'yy-MM-dd HH:mm:ss')}"-->
                         <div class="text-muted font-size-12">
                             <u class="mr-3" th:text="${map.user.username}"></u> 发布于
-                            <b th:text="${#dates.format(map.post.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15 15:32:18</b>
+                            <b th:text="${#dates.format(map.post.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15
+                                15:32:18</b>
                             <ul class="d-inline float-right">
-                                <li class="d-inline ml-2">赞 11</li>
+                                <li class="d-inline ml-2">赞 <i th:text="${map.likeCount}"></i></li>
                                 <li class="d-inline ml-2">|</li>
                                 <li class="d-inline ml-2" th:text="|回帖 ${map.post.commentCount}|">回帖 11</li>
                             </ul>
@@ -174,7 +176,7 @@
 
                     <li class="page-item">
                         <a class="page-link" th:if="${page.current!=page.total}"
-                                             th:href="@{${page.path}(current=${page.current}+1,limit=5)}">下一页</a>
+                           th:href="@{${page.path}(current=${page.current}+1,limit=5)}">下一页</a>
                     </li>
 
                     <li class="page-item">

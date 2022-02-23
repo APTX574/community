@@ -3,12 +3,8 @@ package com.community.controller;
 import com.community.entity.DiscussPost;
 import com.community.entity.Page;
 import com.community.entity.User;
-import com.community.service.CommentService;
-import com.community.service.DiscussPostServer;
-import com.community.service.MessageService;
-import com.community.service.UserServer;
+import com.community.service.*;
 import com.community.util.CommunityConstant;
-import com.community.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +30,8 @@ public class HomeController implements CommunityConstant {
     private UserServer userServer;
     @Autowired
     private CommentService commentService;
-
+    @Autowired
+    private LikeServer likeServer;
 
 
 
@@ -81,6 +78,8 @@ public class HomeController implements CommunityConstant {
                 map.put("user", user);
                 int replyCount=commentService.findCountByEntity(ENTITY_TYPE_POST,post.getId());
                 map.put("replyCount",replyCount);
+                Long likeCount = likeServer.likeSize(ENTITY_TYPE_POST, post.getId());
+                map.put("likeCount",likeCount);
                 posts.add(map);
 
             }
