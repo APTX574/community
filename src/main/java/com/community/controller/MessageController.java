@@ -102,7 +102,7 @@ public class MessageController implements CommunityConstant {
         model.addAttribute("fromUser", userServer.getUserById(fromUser));
         model.addAttribute("list", list);
         //将消息全部设为已读
-        messageService.changeMessageStatus(conversationId);
+        messageService.changeMessageStatus(userId,conversationId);
         return "/site/letter-detail";
 
     }

@@ -11,6 +11,7 @@
         where conversation_id = #{conversationId}
           and (status = 0
             or status = 2)
+          and to_id=#{userId}
     </update>
 
     <select id="selectConversationIdByUserId" resultType="java.lang.String">

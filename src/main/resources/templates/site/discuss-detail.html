@@ -81,7 +81,7 @@
             </h6>
             <!-- 作者 -->
             <div class="media pb-3 border-bottom">
-                <a href="profile.html">
+                <a th:href="@{'/profile/'+${user.id}}">
                     <img th:src="@{${user.headerUrl}}" class="align-self-start mr-4 rounded-circle user-header"
                          alt="用户头像">
                 </a>
@@ -90,7 +90,7 @@
                     <div class="text-muted mt-3">
                         发布于 <b th:text="${#dates.format(post.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15 15:32:18</b>
                         <ul class="d-inline float-right">
-                            <li class="d-inline ml-2"><a th:onclick="like(0,[[${post.id}]])" class="text-primary">
+                            <li class="d-inline ml-2"><a href="javascript:;" th:onclick="like(0,[[${post.id}]])" class="text-primary">
                                 <span th:text="${isLike?'已赞':'赞'}"></span>
                                 <i th:text="${likeCount}"></i></a>
                             </li>
@@ -126,7 +126,7 @@
             <ul class="list-unstyled mt-4">
                 <!-- 第1条回帖 -->
                 <li class="media pb-3 pt-3 mb-3 border-bottom" th:each="cvo:${comments}">
-                    <a href="profile.html">
+                    <a th:href="@{'/profile/'+${cvo.user.id}}">
                         <img th:src="@{${cvo.user.headerUrl}}"
                              class="align-self-start mr-4 rounded-circle user-header" alt="用户头像">
                     </a>
@@ -144,8 +144,8 @@
 								<span>发布于 <b th:text="${#dates.format(cvo.comment.createTime,'yyyy-MM-dd HH:mm:ss')}">
 									2019-04-15 15:32:18</b></span>
                             <ul class="d-inline float-right">
-                                <li class="d-inline ml-2"><a  th:onclick="like(1,[[${cvo.comment.id}]])" class="text-primary">
-                                    <span th:text="${isLike?'已赞':'赞'}"></span>
+                                <li class="d-inline ml-2"><a  href="javascript:;" th:onclick="like(1,[[${cvo.comment.id}]])" class="text-primary">
+                                    <span th:text="${cvo.isLike?'已赞':'赞'}"></span>
                                     (<i th:text="${cvo.likeCount}"></i>)</a></li>
                                 <li class="d-inline ml-2">|</li>
                                 <!--                                回复按钮-->
@@ -189,8 +189,8 @@
 											2019-04-15 15:32:18</span>
                                     <!--赞与回复个数与回复按钮-->
                                     <ul class="d-inline float-right">
-                                        <li class="d-inline ml-2"><a  th:onclick="like(1,[[${rvo.reply.id}]])" class="text-primary">
-                                            <span th:text="${isLike?'已赞':'赞'}"></span>
+                                        <li class="d-inline ml-2"><a href="javascript:;"  th:onclick="like(1,[[${rvo.reply.id}]])" class="text-primary">
+                                            <span th:text="${rvo.isLike?'已赞':'赞'}"></span>
                                             (<i th:text="${rvo.likeCount}"></i>)</a></li>
                                         <li class="d-inline ml-2">|</li>
                                         <li class="d-inline ml-2">

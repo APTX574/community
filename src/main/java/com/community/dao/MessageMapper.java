@@ -87,7 +87,8 @@ public interface MessageMapper {
     /**
      * 修改对应会话的消息的状态，将未读转为已读
      * @param conversationId 会话id
+     * @param userId 用户id
      * @return 返回修改的条数
      */
-    int updateMessageStatus(String conversationId);
+    int updateMessageStatus(int userId,String conversationId);
 }
