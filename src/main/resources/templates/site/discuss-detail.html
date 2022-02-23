@@ -90,7 +90,10 @@
                     <div class="text-muted mt-3">
                         发布于 <b th:text="${#dates.format(post.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-04-15 15:32:18</b>
                         <ul class="d-inline float-right">
-                            <li class="d-inline ml-2"><a href="#" class="text-primary">赞 11</a></li>
+                            <li class="d-inline ml-2"><a th:onclick="like(0,[[${post.id}]])" class="text-primary">
+                                <span th:text="${isLike?'已赞':'赞'}"></span>
+                                <i th:text="${likeCount}"></i></a>
+                            </li>
                             <li class="d-inline ml-2">|</li>
                             <li class="d-inline ml-2"><a href="#replyform" class="text-primary">回帖 <span
                                     th:text="${post.commentCount}"></span></a></li>
@@ -141,7 +144,9 @@
 								<span>发布于 <b th:text="${#dates.format(cvo.comment.createTime,'yyyy-MM-dd HH:mm:ss')}">
 									2019-04-15 15:32:18</b></span>
                             <ul class="d-inline float-right">
-                                <li class="d-inline ml-2"><a href="#" class="text-primary">赞(1)</a></li>
+                                <li class="d-inline ml-2"><a  th:onclick="like(1,[[${cvo.comment.id}]])" class="text-primary">
+                                    <span th:text="${isLike?'已赞':'赞'}"></span>
+                                    (<i th:text="${cvo.likeCount}"></i>)</a></li>
                                 <li class="d-inline ml-2">|</li>
                                 <!--                                回复按钮-->
                                 <li class="d-inline ml-2"><a th:href="|#huifud-${cvoStat.count}|" class="text-primary"
@@ -184,7 +189,9 @@
 											2019-04-15 15:32:18</span>
                                     <!--赞与回复个数与回复按钮-->
                                     <ul class="d-inline float-right">
-                                        <li class="d-inline ml-2"><a href="#" class="text-primary">赞(1)</a></li>
+                                        <li class="d-inline ml-2"><a  th:onclick="like(1,[[${rvo.reply.id}]])" class="text-primary">
+                                            <span th:text="${isLike?'已赞':'赞'}"></span>
+                                            (<i th:text="${rvo.likeCount}"></i>)</a></li>
                                         <li class="d-inline ml-2">|</li>
                                         <li class="d-inline ml-2">
                                             <a th:href="|#huifu-${rvoStat.count}|"
@@ -335,6 +342,24 @@
                 }
             }
         )
+
+
+    };
+    let like = function (entityType, entityId) {
+        var ev=$(event.currentTarget);
+        $.post("/like/add", {
+                "entityType": entityType,
+                "entityId": entityId
+            },
+            function (data) {
+                data = JSON.parse(data);
+                ev.children("i").html(data.newCount)
+                if(ev.children("span").html()=='已赞'){
+                    ev.children("span").html('赞')
+                }else{
+                    ev.children("span").html('已赞')
+                }
+            })
 
 
     };

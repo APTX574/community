@@ -6,6 +6,7 @@ import com.community.entity.Page;
 import com.community.entity.User;
 import com.community.service.CommentService;
 import com.community.service.DiscussPostServer;
+import com.community.service.LikeServer;
 import com.community.service.UserServer;
 import com.community.util.CommunityConstant;
 import com.community.util.CommunityUtil;
@@ -39,6 +40,9 @@ public class DiscussPostController implements CommunityConstant {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    LikeServer likeServer;
+
     @RequestMapping(path = "add", method = RequestMethod.POST)
     @ResponseBody
     public String addDiscussPost(String content, String title) {
@@ -62,12 +66,14 @@ public class DiscussPostController implements CommunityConstant {
     public String showDiscussPost(@PathVariable(name = "id", required = false) int id, Model model, Page page) {
         DiscussPost discussPost = discussPostServer.getDiscussPost(id);
         User user = userServer.getUserById(discussPost.getUserId());
-
+        int loginUserId=0;
+        if(hostHolder.getUser()!=null){
+             loginUserId= hostHolder.getUser().getId();
+        }
         //规定中对于帖子的评论的entityType为0
         page.setLimit(COMMENT_LIMIT);
         page.setRows(discussPost.getCommentCount());
         page.setPath("/discuss/post/" + id);
-
         List<Comment> comments = commentService.
                 findCommentsByEntity(ENTITY_TYPE_POST, id, page.getOffset(), page.getLimit());
         List<Map<String, Object>> commentAndUser = new ArrayList<>();
@@ -82,28 +88,35 @@ public class DiscussPostController implements CommunityConstant {
                 List<Comment> replyList = commentService.findCommentsByEntity(
                         ENTITY_TYPE_COMMENT, comment.getId(), 0, Integer.MAX_VALUE);
                 //回复的vo列表
-                map.put("replyCount",replyList.size());
+                map.put("replyCount", replyList.size());
                 List<Map<String, Object>> replyVo = new ArrayList<>();
                 for (Comment reply : replyList) {
                     Map<String, Object> replyMap = new HashMap<>();
-                    replyMap.put("reply",reply);
-                    replyMap.put("user",userServer.getUserById(reply.getUserId()));
-                    if(reply.getTargetId()!=0){
-                        replyMap.put("target",userServer.getUserById(reply.getTargetId()));
-                    }else{
-                        replyMap.put("target",null);
+                    replyMap.put("reply", reply);
+                    replyMap.put("user", userServer.getUserById(reply.getUserId()));
+                    if (reply.getTargetId() != 0) {
+                        replyMap.put("target", userServer.getUserById(reply.getTargetId()));
+                    } else {
+                        replyMap.put("target", null);
                     }
+                    Long likeCount = likeServer.likeSize(ENTITY_TYPE_COMMENT, reply.getId());
+                    replyMap.put("likeCount", likeCount);
+                    replyMap.put("isLike", likeServer.isLiked(loginUserId, ENTITY_TYPE_COMMENT, reply.getId()));
                     replyVo.add(replyMap);
                 }
-                map.put("replys",replyVo);
+                map.put("replys", replyVo);
                 //将评论添加到列表
+                map.put("likeCount", likeServer.likeSize(ENTITY_TYPE_COMMENT, comment.getId()));
+                map.put("isLike", likeServer.isLiked(loginUserId, ENTITY_TYPE_COMMENT, comment.getId()));
                 commentAndUser.add(map);
             }
         }
+        model.addAttribute("likeCount", likeServer.likeSize(ENTITY_TYPE_POST, discussPost.getId()));
+        model.addAttribute("isLike", likeServer.isLiked(loginUserId, ENTITY_TYPE_POST, discussPost.getId()));
         model.addAttribute("comments", commentAndUser);
         model.addAttribute("post", discussPost);
         model.addAttribute("user", user);
-        model.addAttribute("page",page);
+        model.addAttribute("page", page);
 
         return "/site/discuss-detail";
     }

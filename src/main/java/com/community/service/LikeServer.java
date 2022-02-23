@@ -22,7 +22,7 @@ public class LikeServer {
      * @param entityType 实体类型
      * @param entityId   实体id
      */
-    public void like(int userId, int entityType, int entityId) {
+    public Long like(int userId, int entityType, int entityId) {
         String key = RedisKey.getLikeKey(entityType, entityId);
         Boolean isMember = template.opsForSet().isMember(key, userId);
         if (isMember != null && isMember) {
@@ -30,6 +30,7 @@ public class LikeServer {
         } else {
             template.opsForSet().add(key, userId);
         }
+        return template.opsForSet().size(key);
     }
 
     /**
