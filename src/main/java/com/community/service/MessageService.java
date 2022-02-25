@@ -1,10 +1,14 @@
 package com.community.service;
 
+import com.alibaba.fastjson.JSON;
 import com.community.dao.MessageMapper;
-import com.community.dao.UserMapper;
+import com.community.entity.Event;
 import com.community.entity.Message;
 import com.community.util.CommunityConstant;
 import com.community.util.SensitiveFilter;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
@@ -21,10 +25,13 @@ public class MessageService implements CommunityConstant {
     MessageMapper messageMapper;
 
     @Autowired
-    UserMapper userMapper;
+    UserServer userServer;
 
     @Autowired
     SensitiveFilter sensitiveFilter;
+
+    Logger logger= LoggerFactory.getLogger(MessageService.class);
+
 
     /**
      * 通过用户id查找到与之相关的会话进行分页
@@ -45,8 +52,8 @@ public class MessageService implements CommunityConstant {
      * @param conversation 会话id
      * @return 该会话的所有消息条数
      */
-    public int findAllCountByConversation(String conversation) {
-        return messageMapper.selectAllCountByConversion(conversation);
+    public int findAllCountByConversation(String conversation,int userId) {
+        return messageMapper.selectAllCountByConversion(conversation,userId);
     }
 
     /**
@@ -70,6 +77,10 @@ public class MessageService implements CommunityConstant {
         return messageMapper.selectNewestMessageByConversation(conversation);
     }
 
+    public Message findNewestByUserIdAndType(int userId, String conversionId) {
+        return messageMapper.selectMessageByUserIdAndType(userId, conversionId);
+    }
+
     /**
      * 通过用户id查找到该用户的会话数目
      *
@@ -91,17 +102,17 @@ public class MessageService implements CommunityConstant {
      * @param limit          单页最大条数
      * @return Message列表
      */
-    public List<Message> findMessageByConversation(String conversationId, int offset, int limit) {
-        return messageMapper.selectAllMessageByConversation(conversationId, offset, limit);
+    public List<Message> findMessageByConversation(String conversationId, int offset, int limit,int userId) {
+        return messageMapper.selectAllMessageByConversation(conversationId,userId, offset, limit);
     }
 
     /**
      * 添加消息或者通知
      *
-     * @param fromId
-     * @param toId
-     * @param content
-     * @return
+     * @param fromId  消息发送者
+     * @param toId    消息接受者
+     * @param content 消息内容
+     * @return 影响条数
      */
     public int addMessage(int fromId, int toId, String content, int status) {
         StringBuffer sb = new StringBuffer(HtmlUtils.htmlEscape(content));
@@ -133,18 +144,48 @@ public class MessageService implements CommunityConstant {
         return messageMapper.selectUnReadCountByUserId(userId, status);
     }
 
-    public int changeMessageStatus(int userId,String conversationId) {
-        return messageMapper.updateMessageStatus(userId,conversationId);
+    public void changeMessageStatus(int userId, String conversationId) {
+        messageMapper.updateMessageStatus(userId, conversationId);
     }
 
-    public int addNotice(int fromId, String content, int toId, int status) {
-        String conversationId = fromId + "_" + toId;
-        Message message=new Message();
-        message.setCreateTime(new Date());
-        message.setStatus(status);
-        message.setToId(toId);
-        message.setFromId(fromId);
-        message.setConversationId(conversationId);
-        return messageMapper.insertMessage(message);
+    public void addEvent(@NotNull Event event) {
+        Message message = new Message();
+        message.setToId(event.getEntityUserId());
+        message.setFromId(event.getUserId());
+        message.setCreateTime(event.getCreateTime());
+        String action;
+        String entity;
+        //xxx关注了您的xx评论
+        switch (event.getTopic()) {
+            case TOPIC_COMMENT -> action = "评论了";
+            case TOPIC_LIKE -> action = "点赞了";
+            case TOPIC_FOLLOW -> action = "关注了";
+            default -> action = "";
+        }
+        switch (event.getEntityType()) {
+            case ENTITY_TYPE_POST -> entity = "帖子";
+            case ENTITY_TYPE_COMMENT -> entity = "评论";
+            case ENTITY_TYPE_USER -> entity = "人";
+            default -> entity = "";
+        }
+        String username = userServer.getUserById(event.getUserId()).getUsername();
+        message.setCreateTime(event.getCreateTime());
+        message.setStatus(UNREAD_NOTICE);
+        message.setConversationId(event.getTopic().toLowerCase(Locale.ROOT));
+        HashMap<String,Object> map = new HashMap<>(4);
+        map.put("msg", username + action + "您的");
+        map.put("entityType", event.getEntityType());
+        map.put("entityId", event.getEntityId());
+        map.put("entity",entity);
+        message.setContent(JSON.toJSONString(map));
+        messageMapper.insertMessage(message);
+        logger.info("messageMapper添加了event");
+
     }
+
+    public int getCountByUserIdAndType(int userId, String conversationId) {
+        return messageMapper.selectCountByTypeAndUserId(userId, conversationId);
+    }
+
+
 }

@@ -22,7 +22,7 @@ import java.util.Map;
  * @author aptx
  */
 @Controller
-public class LikeAndFellowController {
+public class LikeController {
 
     @Autowired
     HostHolder hostHolder;

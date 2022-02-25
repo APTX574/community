@@ -1,6 +1,9 @@
 package com.community.service;
 
+import com.community.entity.Event;
 import com.community.entity.User;
+import com.community.event.EventProducer;
+import com.community.util.CommunityConstant;
 import com.community.util.CommunityUtil;
 import com.community.util.RedisKey;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +21,30 @@ import java.util.*;
  * @author aptx
  */
 @Service
-public class FollowServer {
+public class FollowServer implements CommunityConstant {
 
     @Autowired
     RedisTemplate<String, Object> template;
     @Autowired
     UserServer userServer;
 
+    @Autowired
+    EventProducer eventProducer;
     public boolean follow(int fromUserId, int toUserId) {
         String toUserKey = RedisKey.getUserFollowedKey(toUserId);
         String fromUserKey = RedisKey.getUserFollowKey(fromUserId);
         Boolean isMember = isFollow(fromUserId,toUserId);
+        if (!Boolean.TRUE.equals(isMember)){
+            Event event=new Event();
+            event.setCreateTime(new Date()).setTopic(TOPIC_FOLLOW).setEntityType(ENTITY_TYPE_USER).setEntityId(toUserId)
+                    .setUserId(fromUserId).setEntityUserId(toUserId);
+            eventProducer.addEvent(event);
+        }
         Boolean execute = template.execute(new SessionCallback<>() {
             @Override
             public Boolean execute(RedisOperations operations) throws DataAccessException {
                 operations.multi();
-                if (isMember != null && isMember) {
+                if (isMember) {
                     template.opsForZSet().remove(fromUserKey, toUserId);
                     template.opsForZSet().remove(toUserKey, fromUserId);
                     operations.exec();

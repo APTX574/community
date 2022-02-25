@@ -1,5 +1,7 @@
 package com.community.service;
 
+import com.community.entity.Event;
+import com.community.event.EventProducer;
 import com.community.util.CommunityConstant;
 import com.community.util.RedisKey;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,8 @@ import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 /**
  * 处理点赞相关的业务逻辑
@@ -25,6 +29,9 @@ public class LikeServer implements CommunityConstant {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    EventProducer eventProducer;
+
     /**
      * 通过用户id和实体类去点赞或者取消赞
      *
@@ -41,22 +48,16 @@ public class LikeServer implements CommunityConstant {
             likedUserId = commentService.findCommentById(entityId).getUserId();
         }
         String userLikeKey = RedisKey.getUserLikeKey(likedUserId);
-
-//
-//        Boolean isMember = redisTemplate.opsForSet().isMember(entityLikeKey, userId);
-//        if (isMember != null && isMember) {
-//            redisTemplate.opsForSet().remove(entityLikeKey, userId);
-//            redisTemplate.opsForValue().decrement(userLikeKey);
-//        } else {
-//            redisTemplate.opsForSet().add(entityLikeKey, userId);
-//            redisTemplate.opsForValue().increment(userLikeKey);
-//        }
-//        return redisTemplate.opsForSet().size(entityLikeKey);
-        //事物管理
+        Boolean isMember = redisTemplate.opsForSet().isMember(entityLikeKey, userId);
+        if (!Boolean.TRUE.equals(isMember)){
+            Event event=new Event();
+            event.setCreateTime(new Date()).setTopic(TOPIC_LIKE).setEntityType(entityType).setEntityId(entityId)
+                    .setUserId(userId).setEntityUserId(likedUserId);
+            eventProducer.addEvent(event);
+        }
         redisTemplate.execute(new SessionCallback<>() {
             @Override
             public Object execute(RedisOperations operations) throws DataAccessException {
-                Boolean isMember = redisTemplate.opsForSet().isMember(entityLikeKey, userId);
                 operations.multi();
                 if (isMember != null && isMember) {
                     redisTemplate.opsForSet().remove(entityLikeKey, userId);
@@ -68,6 +69,7 @@ public class LikeServer implements CommunityConstant {
                 return operations.exec();
             }
         });
+
         return redisTemplate.opsForSet().size(entityLikeKey);
     }
 

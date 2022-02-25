@@ -11,14 +11,15 @@
         where conversation_id = #{conversationId}
           and (status = 0
             or status = 2)
-          and to_id=#{userId}
+          and to_id = #{userId}
     </update>
 
     <select id="selectConversationIdByUserId" resultType="java.lang.String">
         select conversation_id
         from message
-        where from_id = #{userId}
-           or to_id = #{userId}
+        where conversation_id not in ('follow', 'like', 'comment')
+          and (from_id = #{userId}
+            or to_id = #{userId})
         group by conversation_id
         limit #{offset},#{limit}
     </select>
@@ -33,13 +34,14 @@
         select ifnull(count(1), 0)
         from message
         where conversation_id = #{conversationId}
-          and status = 0
+          and status = 2
           and to_id = #{userId}
     </select>
     <select id="selectAllCountByConversion" resultType="java.lang.Integer">
         select ifnull(count(1), 0)
         from message
         where conversation_id = #{conversationId}
+        <if test="userId!=0"> and to_id=#{userId}</if>
     </select>
     <select id="selectConversationCount" resultType="java.lang.Integer">
         select count(m2.conversation_id)
@@ -57,6 +59,7 @@
         select id, from_id, to_id, conversation_id, content, status, create_time
         from message
         where conversation_id = #{conversationId}
+        <if test="userId!=0">and to_id=#{userId}</if>
         order by create_time desc
         limit #{offset},#{limit}
     </select>
@@ -65,6 +68,21 @@
         from message
         where to_id = #{userId}
           and status = #{status}
+    </select>
+    <select id="selectMessageByUserIdAndType" resultType="com.community.entity.Message">
+        select id, from_id, to_id, conversation_id, content, status, create_time
+        from community.message
+        where to_id = #{userId}
+          and conversation_id = #{conversationId}
+        order by create_time desc
+        limit 1
+    </select>
+    <select id="selectCountByTypeAndUserId" resultType="java.lang.Integer">
+        select count(id)
+        from community.message
+        where to_id = #{userId}
+          and conversation_id = #{conversationId}
+
     </select>
 
 

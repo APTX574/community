@@ -75,6 +75,7 @@ public interface CommunityConstant {
      */
     int ENTITY_TYPE_COMMENT = 1;
 
+    int ENTITY_TYPE_USER=2;
     /**
      * 评论每行显示条数
      */
@@ -114,5 +115,20 @@ public interface CommunityConstant {
     /**
      * 验证码过期时间
      */
-    long KAPTCHA_TIME_OUT=1800;
+    long KAPTCHA_TIME_OUT = 1800;
+
+    /**
+     * 评论时间主题
+     */
+    String TOPIC_COMMENT = "comment";
+
+    /**
+     * 点赞时间主题
+     */
+    String TOPIC_LIKE = "like";
+
+    /**
+     * 关注时间主题
+     */
+    String TOPIC_FOLLOW = "follow";
 }

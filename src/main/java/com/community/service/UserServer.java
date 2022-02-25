@@ -8,6 +8,8 @@ import com.community.util.CommunityUtil;
 import com.community.util.MailClient;
 import com.community.util.RedisKey;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
@@ -32,10 +34,11 @@ public class UserServer implements CommunityConstant {
 
     private final Random random = new Random();
 
-    //    @Autowired
-//    private LoginTicketServer loginTicketServer;
+    Logger logger= LoggerFactory.getLogger(UserServer.class);
+
     @Autowired
     private UserMapper userMapper;
+
 
     @Autowired
     private TemplateEngine templateEngine;
@@ -209,6 +212,7 @@ public class UserServer implements CommunityConstant {
         String userKey = RedisKey.getUserKey(userId);
         User user = userMapper.selectById(userId);
         redisTemplate.opsForValue().set(userKey, user,20, TimeUnit.MINUTES);
+        logger.info("redis加载缓存 userId="+userId);
         return user;
     }
 }

@@ -63,7 +63,6 @@ public class SensitiveFilter {
             while ((n = reader.read(buffer)) != -1) {
                 int i = 0;
                 assert n > 0;
-                System.out.println(n);
                 //TODO 处理符号
                 while (i < n) {
                     int j = i;

@@ -75,7 +75,6 @@ public class SettingController implements CommunityConstant {
         //判断是否上传图片
         if (image == null) {
             model.addAttribute("error", "您还未上传图片");
-            System.out.println("image==null");
             return "/site/setting";
         }
 
@@ -85,7 +84,6 @@ public class SettingController implements CommunityConstant {
             String fileType = originalFilename.substring(originalFilename.lastIndexOf('.') + 1);
             if (StringUtils.isBlank(fileType)) {
                 model.addAttribute("error", "文件格式错误");
-                System.out.println("fileType==null");
                 return "/site/setting";
             }
             String fileName = CommunityUtil.generateUUID().substring(10).toLowerCase(Locale.ROOT) + "." + fileType;
@@ -99,7 +97,6 @@ public class SettingController implements CommunityConstant {
                 image.transferTo(file);
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("transferTo error");
                 //TODO logger 文件上传失败
                 throw new RuntimeException("上传文件失败，服务器内部异常", e);
             }
@@ -110,7 +107,6 @@ public class SettingController implements CommunityConstant {
             return "redirect:/index";
         }
         model.addAttribute("error", "文件格式错误");
-        System.out.println("fileName==null");
         return "/site/setting";
 
     }
@@ -126,7 +122,6 @@ public class SettingController implements CommunityConstant {
      */
     @RequestMapping(path = "/user/header/{imageName}", method = RequestMethod.GET)
     public void getHeader(HttpServletResponse response, @PathVariable("imageName") String imageName) {
-        System.out.println(imageName);
         File file = new File(uploadPath + "/" + imageName);
         String suffix = imageName.substring(imageName.lastIndexOf(".") + 1);
         //设置响应格式

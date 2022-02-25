@@ -2,6 +2,7 @@ package com.community.dao;
 
 import com.community.entity.Message;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -43,11 +44,11 @@ public interface MessageMapper {
     /**
      * 获取指定用户指定会话的所有消息数目
      *
-     * @param userId         用户id
      * @param conversationId 会话id
+     * @param userId         用户id
      * @return 未读消息数目
      */
-    int selectAllCountByConversion(String conversationId);
+    int selectAllCountByConversion(String conversationId, @Param("userId") int userId);
 
     /**
      * 根据用户id查询与之有关的会话数目
@@ -61,11 +62,12 @@ public interface MessageMapper {
      * 通过会话获得所有的消息记录并做分页
      *
      * @param conversationId 会话id
+     * @param userId         用户id
      * @param offset         起始
      * @param limit          每页最大显示数目
      * @return 消息列表
      */
-    List<Message> selectAllMessageByConversation(String conversationId, int offset, int limit);
+    List<Message> selectAllMessageByConversation(String conversationId, @Param("userId") int userId, int offset, int limit);
 
     /**
      * 添加消息或者通知
@@ -86,9 +88,14 @@ public interface MessageMapper {
 
     /**
      * 修改对应会话的消息的状态，将未读转为已读
+     *
      * @param conversationId 会话id
-     * @param userId 用户id
+     * @param userId         用户id
      * @return 返回修改的条数
      */
-    int updateMessageStatus(int userId,String conversationId);
+    int updateMessageStatus(int userId, String conversationId);
+
+    Message selectMessageByUserIdAndType(int userId, String conversationId);
+
+    int selectCountByTypeAndUserId(int userId, String conversationId);
 }

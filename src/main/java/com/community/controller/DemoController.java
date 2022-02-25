@@ -29,7 +29,6 @@ public class DemoController {
     }
     @RequestMapping("/newcode")
     public void newCode(HttpServletRequest request, HttpServletResponse response){
-        System.out.println(request.getContextPath());
         response.setContentType("text/html;Charset=utf-8");
         try (PrintWriter writer= response.getWriter()){
             writer.write("<h1>newCode<h1>");
@@ -81,7 +80,6 @@ public class DemoController {
     @RequestMapping(path =  "/json2",method = RequestMethod.POST)
     @ResponseBody
     public Map json2(@RequestBody Map<String,String> map){
-        System.out.println(map.get("id"));
         return map;
     }
 

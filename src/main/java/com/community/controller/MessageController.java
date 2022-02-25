@@ -61,7 +61,7 @@ public class MessageController implements CommunityConstant {
                 }
                 int unReadCount = messageService.findUnReadByConversation(userId, conversationId);
                 map.put("unReadCount", unReadCount);
-                int allCount = messageService.findAllCountByConversation(conversationId);
+                int allCount = messageService.findAllCountByConversation(conversationId,0);
                 map.put("allCount", allCount);
                 map.put("conversationId", conversationId);
                 list.add(map);
@@ -83,9 +83,9 @@ public class MessageController implements CommunityConstant {
         //获取关于会话的消息
         User user = hostHolder.getUser();
         int userId = user.getId();
-        page.setRows(messageService.findAllCountByConversation(conversationId));
+        page.setRows(messageService.findAllCountByConversation(conversationId,0));
         page.setPath("/letter/detail/" + conversationId);
-        List<Message> messages = messageService.findMessageByConversation(conversationId, page.getOffset(), page.getLimit());
+        List<Message> messages = messageService.findMessageByConversation(conversationId, page.getOffset(), page.getLimit(),0);
         int fromUser;
         if (messages.get(0).getFromId() == userId) {
             fromUser = messages.get(0).getToId();

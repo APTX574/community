@@ -76,7 +76,7 @@
                                 th:text="${unreadMessage}">3</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link position-relative" href="notice.html">系统通知<span
+                        <a class="nav-link position-relative" th:href="@{/notice}">系统通知<span
                                 class="badge badge-danger" th:if="${unreadNotice!=0}"
                                 th:text="${unreadNotice}">27</span></a>
                     </li>
@@ -134,8 +134,8 @@
             <ul class="list-unstyled">
                 <li class="media pb-3 pt-3 mb-3 border-bottom position-relative" th:each="map:${conversations}">
                     <span class="badge badge-danger" th:if="${map.unReadCount!=0}" th:text="${map.unReadCount}">3</span>
-                    <a th:href="@{'/profile/'+${map.user.id}}">
-                        <img th:src="${map.user.headerUrl}" class="mr-4 rounded-circle user-header" alt="用户头像">
+                    <a th:href="@{|/profile/${map.user.id}|}">
+                        <img th:src="${map.user.headerUrl}" class="mr-4 rounded-circle user-header" alt="用户头像" >
                     </a>
                     <div class="media-body">
                         <h6 class="mt-0 mb-3">
@@ -153,7 +153,7 @@
                         </div>
                     </div>
                 </li>
-
+            </ul>
                 <!-- 分页 -->
                 <nav class="mt-5" th:replace="index::pagination">
                     <ul class="pagination justify-content-center">
@@ -246,12 +246,12 @@
                 "fromId": [[${loginUser.id}]]
             },
             (data) => {
-                data=JSON.parse(data);
-                if (data.code==200){
-                    $("#hintBody").innerText="发送成功";
-                    location.href=location.pathname;
-                }else if(data.code==500){
-                    $("#hintBody").innerText="发送失败";
+                data = JSON.parse(data);
+                if (data.code == 200) {
+                    $("#hintBody").innerText = "发送成功";
+                    location.href = location.pathname;
+                } else if (data.code == 500) {
+                    $("#hintBody").innerText = "发送失败";
 
                 }
             }

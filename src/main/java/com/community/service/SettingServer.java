@@ -17,7 +17,6 @@ public class SettingServer implements CommunityConstant {
     private UserServer userServer;
 
     public Map<String,Object> changePwd(User user , String newPwd, String oldPwd){
-        System.out.println(user);
         Map<String,Object> map=new HashMap<>();
         if(user==null){
             map.put("msg",UN_LOGIN);
