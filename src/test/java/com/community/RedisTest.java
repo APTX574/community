@@ -25,4 +25,7 @@ public class RedisTest {
 
 
     }
+    @Test
+    public void test1(){
+    }
 }

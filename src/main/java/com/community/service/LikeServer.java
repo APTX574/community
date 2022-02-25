@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class LikeServer implements CommunityConstant {
     @Autowired
-    private RedisTemplate<String, Object> template;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private DiscussPostServer discussPostServer;
@@ -43,32 +43,32 @@ public class LikeServer implements CommunityConstant {
         String userLikeKey = RedisKey.getUserLikeKey(likedUserId);
 
 //
-//        Boolean isMember = template.opsForSet().isMember(entityLikeKey, userId);
+//        Boolean isMember = redisTemplate.opsForSet().isMember(entityLikeKey, userId);
 //        if (isMember != null && isMember) {
-//            template.opsForSet().remove(entityLikeKey, userId);
-//            template.opsForValue().decrement(userLikeKey);
+//            redisTemplate.opsForSet().remove(entityLikeKey, userId);
+//            redisTemplate.opsForValue().decrement(userLikeKey);
 //        } else {
-//            template.opsForSet().add(entityLikeKey, userId);
-//            template.opsForValue().increment(userLikeKey);
+//            redisTemplate.opsForSet().add(entityLikeKey, userId);
+//            redisTemplate.opsForValue().increment(userLikeKey);
 //        }
-//        return template.opsForSet().size(entityLikeKey);
+//        return redisTemplate.opsForSet().size(entityLikeKey);
         //事物管理
-        template.execute(new SessionCallback<>() {
+        redisTemplate.execute(new SessionCallback<>() {
             @Override
             public Object execute(RedisOperations operations) throws DataAccessException {
-                Boolean isMember = template.opsForSet().isMember(entityLikeKey, userId);
+                Boolean isMember = redisTemplate.opsForSet().isMember(entityLikeKey, userId);
                 operations.multi();
                 if (isMember != null && isMember) {
-                    template.opsForSet().remove(entityLikeKey, userId);
-                    template.opsForValue().decrement(userLikeKey);
+                    redisTemplate.opsForSet().remove(entityLikeKey, userId);
+                    redisTemplate.opsForValue().decrement(userLikeKey);
                 } else {
-                    template.opsForSet().add(entityLikeKey, userId);
-                    template.opsForValue().increment(userLikeKey);
+                    redisTemplate.opsForSet().add(entityLikeKey, userId);
+                    redisTemplate.opsForValue().increment(userLikeKey);
                 }
                 return operations.exec();
             }
         });
-        return template.opsForSet().size(entityLikeKey);
+        return redisTemplate.opsForSet().size(entityLikeKey);
     }
 
     /**
@@ -80,7 +80,7 @@ public class LikeServer implements CommunityConstant {
      */
     public Long likeSize(int entityType, int entityId) {
         String key = RedisKey.getEntityLikeKey(entityType, entityId);
-        return template.opsForSet().size(key);
+        return redisTemplate.opsForSet().size(key);
     }
 
     /**
@@ -93,7 +93,7 @@ public class LikeServer implements CommunityConstant {
      */
     public boolean isLiked(int userId, int entityType, int entityId) {
         String key = RedisKey.getEntityLikeKey(entityType, entityId);
-        Boolean isLiked = template.opsForSet().isMember(key, userId);
+        Boolean isLiked = redisTemplate.opsForSet().isMember(key, userId);
         return Boolean.TRUE.equals(isLiked);
     }
 
@@ -105,9 +105,9 @@ public class LikeServer implements CommunityConstant {
      */
     public int getUserLikedCount(int userId) {
         String key = RedisKey.getUserLikeKey(userId);
-        Object o = template.opsForValue().get(key);
+        Object o = redisTemplate.opsForValue().get(key);
         if (o == null) {
-            template.opsForValue().set(key, 0);
+            redisTemplate.opsForValue().set(key, 0);
             return 0;
         } else {
             return (int) o;

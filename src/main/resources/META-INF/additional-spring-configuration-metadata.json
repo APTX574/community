@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "community.path.domain",
+      "type": "java.lang.String",
+      "description": "Description for community.path.domain."
+    },
+    {
+      "name": "community.path.domain",
+      "type": "java.lang.String",
+      "description": "Description for community.path.domain."
+    }
+  ] }

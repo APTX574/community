@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.DigestUtils;
 
+import javax.xml.crypto.Data;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -54,5 +57,8 @@ public class CommunityUtil {
     }
     public static void addNotice(){
 
+    }
+    public static Date getDate(Long timeStamp){
+        return new Date(timeStamp);
     }
 }

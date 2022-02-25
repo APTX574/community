@@ -110,4 +110,9 @@ public interface CommunityConstant {
      * 关注通知
      */
     int FELLOW_NOTICE_TYPE = -3;
+
+    /**
+     * 验证码过期时间
+     */
+    long KAPTCHA_TIME_OUT=1800;
 }

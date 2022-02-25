@@ -1,9 +1,10 @@
 package com.community.controller;
 
 import com.community.entity.User;
-import com.community.service.LoginTicketServer;
+import com.community.service.KaptchaServer;
 import com.community.service.UserServer;
 import com.community.util.CommunityConstant;
+import com.community.util.CommunityUtil;
 import com.community.util.CookieUtil;
 import com.google.code.kaptcha.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,12 @@ public class LoginController implements CommunityConstant {
 
     @Autowired
     private Producer producer;
+
+//    @Autowired
+//    private LoginTicketServer loginTicketServer;
+
+    @Autowired
+    KaptchaServer kaptchaServer;
 
     /**
      * 获取注册页面的模板
@@ -128,9 +135,17 @@ public class LoginController implements CommunityConstant {
      * @RequestPath /login
      */
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    public String login(Model model, User user, String code, HttpSession session, boolean rememberMe, HttpServletResponse response) {
-        String code1 = session.getAttribute("code").toString().toLowerCase(Locale.ROOT);
-        if (!code1.equals(code.toLowerCase(Locale.ROOT))) {
+    public String login(Model model, User user, String code, HttpSession session,
+                        boolean rememberMe, HttpServletResponse response,
+                        HttpServletRequest request) {
+        String token = CookieUtil.getValue(request, "code");
+        String kaptchaCode = kaptchaServer.getKaptchaCode(token);
+        if(kaptchaCode==null){
+            model.addAttribute("codeMsg", "验证码超时");
+            model.addAttribute("user", user);
+            return "/site/login";
+        }
+        if (!kaptchaCode.equals(code.toLowerCase(Locale.ROOT))) {
             model.addAttribute("codeMsg", "验证码输入错误");
             model.addAttribute("user", user);
             return "/site/login";
@@ -203,7 +218,11 @@ public class LoginController implements CommunityConstant {
         //获取图片
         BufferedImage image = producer.createImage(code);
         //保存到回话
-        session.setAttribute("code", code);
+        String token = CommunityUtil.generateUUID().substring(0, 8);
+        kaptchaServer.storeKaptchaCode(token,code);
+        Cookie cookie=new Cookie("code",token);
+        cookie.setMaxAge((int)KAPTCHA_TIME_OUT);
+        response.addCookie(cookie);
         //返回图片
         response.setContentType("image/png");
         try {
