@@ -1,17 +1,41 @@
 package com.community.entity;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import java.util.Date;
 import java.util.Objects;
 
+@Document(indexName = "discusspost")
 public class DiscussPost {
+
+    @Id
     private int id;
+
+    @Field(type = FieldType.Integer)
     private int userId;
+
+    @Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart_word")
     private String title;
+
+    @Field(type = FieldType.Text, analyzer = "ik_max_word", searchAnalyzer = "ik_smart_word")
     private String content;
+
+    @Field(type = FieldType.Integer)
     private int type = 0;
+
+    @Field(type = FieldType.Integer)
     private int status = 0;
+
+    @Field(type = FieldType.Date)
     private Date createTime;
+
+    @Field(type = FieldType.Integer)
     private int commentCount;
+
+    @Field(type = FieldType.Double)
     private double score;
 
     @Override
@@ -116,14 +140,14 @@ public class DiscussPost {
     }
 }
 /*
-* comments
-*   list cvo
-*       comment
-*       user
-*       replyCount
-*       replys rvo
-*           reply Comment对象
-*           user 发送者对象
-*           target 发送评论的目标对象
-*
-* */
+ * comments
+ *   list cvo
+ *       comment
+ *       user
+ *       replyCount
+ *       replys rvo
+ *           reply Comment对象
+ *           user 发送者对象
+ *           target 发送评论的目标对象
+ *
+ * */
